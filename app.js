@@ -17,20 +17,16 @@ app.get("/",(req, res)=>{
 app.use("/api/contacts", contactsRouter);
 
 app.use((req, res, next) => {
-
-    // Code ở đây sẽ chạy khi không có route được định nghĩa nào
-    // khớp với yêu cầu. Gọi next() để chuyển sang middleware xử lý lỗi
+    // Code ở đây sẽ chạy khi không có route được định nghĩa nào khớp với yêu cầu. Gọi next() để chuyển sang middleware xử lý lỗi
     return next(new ApiError(404, "Resource not found"));
 });
 
 
 // Định nghĩa middleware xử lý lỗi cuối cùng, sau các app.use() và routes khác
-app.use((error, req, res, next) => {
-    // Middleware xử lý lỗi tập trung.
-    // Trong các đoạn code xử lý ở các route, gọi next(error)
-    // sẽ chuyển về middleware xử lý lỗi này
-    return res.status(error.statusCode || 500).json({
-        message: error.message || "Internal Server Error",
+app.use((err, req, res, next) => {
+    // Middleware xử lý lỗi tập trung. Trong các đoạn code xử lý ở các route, gọi next(error)sẽ chuyển về middleware xử lý lỗi này
+    return res.status(err.statusCode || 500).json({
+        message: err.message || "Internal Server Error",
     });
 });
 
